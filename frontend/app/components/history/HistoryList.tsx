@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Calendar, Clock, Tv, ChevronDown, ChevronUp, Trash2, User } from "lucide-react";
-import { deleteHistory } from "../../../src/utils/api";
+import { Calendar, Clock, Tv, ChevronDown, ChevronUp, Trash2, User, Eye, EyeOff } from "lucide-react";
+import TranscriptExpandedView from "../transcriptExpandedDetails/TranscriptExpandedView";
+import { deleteHistory, updateTranscriptVisibility } from "../../../src/utils/api";
 import { toast } from "react-toastify";
 
 interface TranscriptData {
@@ -22,15 +23,17 @@ interface TranscriptData {
   sentiment?: string;
   host_name?: string;
   guest_name?: string;
+  visibility?: string;
   created_at: string;
 }
 
 interface HistoryListProps {
   history: TranscriptData[];
   onDelete: (id: number) => void;
+  onUpdateVisibility?: (id: number, visibility: string) => void;
 }
 
-export default function HistoryList({ history, onDelete }: HistoryListProps) {
+export default function HistoryList({ history, onDelete, onUpdateVisibility }: HistoryListProps) {
   const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set());
   const [deletingItems, setDeletingItems] = useState<Set<number>>(new Set());
   const [deleteModal, setDeleteModal] = useState<{show: boolean, id: number | null}>({show: false, id: null});
@@ -72,6 +75,24 @@ export default function HistoryList({ history, onDelete }: HistoryListProps) {
 
   const handleCancelDelete = () => {
     setDeleteModal({show: false, id: null});
+  };
+
+  const handleToggleVisibility = async (id: number, currentVisibility: string | undefined) => {
+    const newVisibility = currentVisibility === 'PUBLIC' ? 'PRIVATE' : 'PUBLIC';
+    try {
+      const result = await updateTranscriptVisibility(id, newVisibility);
+      if (!result.error) {
+        if (onUpdateVisibility) {
+          onUpdateVisibility(id, newVisibility);
+        }
+        toast.success(`Transcript is now ${newVisibility.toLowerCase()}`);
+      } else {
+        toast.error(result.error || "Failed to update visibility");
+      }
+    } catch (error) {
+      console.error("Visibility update error:", error);
+      toast.error("Failed to update visibility");
+    }
   };
 
   useEffect(() => {
@@ -166,6 +187,22 @@ export default function HistoryList({ history, onDelete }: HistoryListProps) {
                 </button>
 
                 <button
+                  onClick={() => handleToggleVisibility(item.id, item.visibility)}
+                  className={`flex items-center justify-center gap-1 transition-colors ${
+                    item.visibility === 'PUBLIC'
+                      ? 'text-green-400 hover:text-green-300'
+                      : 'text-gray-400 hover:text-gray-300'
+                  }`}
+                  title={item.visibility === 'PUBLIC' ? 'Make Private' : 'Make Public'}
+                >
+                  {item.visibility === 'PUBLIC' ? (
+                    <Eye className="w-5 h-5" />
+                  ) : (
+                    <EyeOff className="w-5 h-5" />
+                  )}
+                </button>
+
+                <button
                   onClick={() => toggleExpanded(item.id)}
                   className="flex items-center justify-center gap-1 text-blue-400 hover:text-blue-300 transition-colors"
                 >
@@ -187,83 +224,8 @@ export default function HistoryList({ history, onDelete }: HistoryListProps) {
 
           {/* Expanded Section */}
           {expandedItems.has(item.id) && (
-            <div className="border-t border-gray-700 p-4 sm:p-6 space-y-6">
-              {/* Highlights */}
-              {item.highlights?.length ? (
-                <div>
-                  <h4 className="text-lg font-semibold text-white mb-2">
-                    Highlights
-                  </h4>
-                  <ul className="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    {item.highlights.map((highlight, idx) => (
-                      <li key={idx}>{highlight}</li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
-
-              {/* Topics */}
-              {item.topics?.length ? (
-                <div>
-                  <h4 className="text-lg font-semibold text-white mb-2">Topics</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {item.topics.map((topic, idx) => (
-                      <span
-                        key={idx}
-                        className="bg-blue-700/40 border border-blue-600 px-3 py-1 rounded-full text-sm text-blue-100"
-                      >
-                        #{topic}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ) : null}
-
-              {/* Key Moments */}
-              {item.key_moments?.length ? (
-                <div>
-                  <h4 className="text-lg font-semibold text-white mb-2">
-                    Key Moments
-                  </h4>
-                  <ul className="list-disc list-inside text-gray-300 text-sm space-y-1">
-                    {item.key_moments.map((moment, idx) => (
-                      <li key={idx}>
-                        <span className="text-blue-400">{moment.timestamp}</span> —{" "}
-                        {moment.moment}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
-
-              {/* Quotes */}
-              {item.quotes?.length ? (
-                <div>
-                  <h4 className="text-lg font-semibold text-white mb-2">Quotes</h4>
-                  <ul className="text-gray-300 space-y-2 text-sm">
-                    {item.quotes.map((quote, idx) => (
-                      <li
-                        key={idx}
-                        className="italic border-l-4 border-pink-500 pl-3"
-                      >
-                        "{quote}"
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
-
-              {/* Transcript */}
-              <div>
-                <h4 className="text-lg font-semibold text-white mb-2">
-                  Full Transcript
-                </h4>
-                <div className="bg-gray-800/50 border border-gray-600 rounded-lg p-4 max-h-96 overflow-y-auto">
-                  <p className="text-gray-300 text-sm whitespace-pre-wrap leading-relaxed">
-                    {item.transcript}
-                  </p>
-                </div>
-              </div>
+            <div className="border-t border-gray-700 p-4 sm:p-6">
+              <TranscriptExpandedView transcript={item} showMeta={false} showSentiment={false} />
             </div>
           )}
         </div>

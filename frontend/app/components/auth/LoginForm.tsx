@@ -26,7 +26,7 @@ export default function LoginForm() {
       localStorage.setItem("access_token", res.access);
       localStorage.setItem("refresh_token", res.refresh);
       toast.success("Login successful!");
-      router.push("/summarizer");
+      router.push("/public-feed");
     } else {
       toast.error(res.error || "Login failed.");
     }

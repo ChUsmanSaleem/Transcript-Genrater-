@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import HistoryList from '../components/history/HistoryList';
 import NaveBar from '../components/navebar/NaveBar';
+import SearchField from '../components/searching/SearchField';
 import { toast } from 'react-toastify';
-import { Clock, Youtube, Loader2, FileText } from 'lucide-react'; // ✅ Added icons
+import { Clock, Youtube, Loader2, FileText } from 'lucide-react'; 
 
 interface TranscriptData {
   id: number;
@@ -69,6 +70,12 @@ export default function HistoryPage() {
     setHistory(prev => prev.filter(item => item.id !== id));
   };
 
+  const handleUpdateVisibility = (id: number, visibility: string) => {
+    setHistory(prev => prev.map(item =>
+      item.id === id ? { ...item, visibility } : item
+    ));
+  };
+
   const filteredHistory = history.filter(item =>
     item.title?.toLowerCase().includes(searchQuery.toLowerCase()) || false
   );
@@ -84,7 +91,7 @@ export default function HistoryPage() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <NaveBar onLogout={() => {}} />
+      <NaveBar />
       <div className="p-6">
         <div className="flex items-center justify-center gap-2 mb-6">
           <Clock className="w-6 h-6 text-blue-400" />
@@ -108,15 +115,7 @@ export default function HistoryPage() {
                 <FileText className="w-5 h-5 text-green-400" />
                 <p>{filteredHistory.length} summaries found{searchQuery && ` (filtered from ${history.length})`}</p>
               </div>
-              <div className="flex-shrink-0">
-                <input
-                  type="text"
-                  placeholder="Search by title..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full lg:w-64 xl:w-110 px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+              <SearchField searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
             </div>
               {filteredHistory.length === 0 && searchQuery ? (
                 <div className="flex flex-col items-center justify-center text-gray-400 py-8">
@@ -124,7 +123,7 @@ export default function HistoryPage() {
                   <p>No summaries found matching "{searchQuery}"</p>
                 </div>
               ) : (
-                <HistoryList history={filteredHistory} onDelete={handleDelete} />
+                <HistoryList history={filteredHistory} onDelete={handleDelete} onUpdateVisibility={handleUpdateVisibility} />
               )}
             </>
         )}

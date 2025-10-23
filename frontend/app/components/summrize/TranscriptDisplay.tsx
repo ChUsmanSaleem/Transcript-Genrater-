@@ -15,6 +15,7 @@ import {
   Tags,
   PlayCircle,
   Tv,
+  Globe,
 } from "lucide-react";
 
 interface TranscriptDisplayProps {
@@ -33,6 +34,8 @@ interface TranscriptDisplayProps {
   sentiment?: string;
   host_name?: string;
   guest_name?: string;
+  visibility?: string;
+  onVisibilityChange?: () => void;
 }
 
 export default function TranscriptDisplay({
@@ -51,6 +54,8 @@ export default function TranscriptDisplay({
   sentiment,
   host_name,
   guest_name,
+  visibility,
+  onVisibilityChange,
 }: TranscriptDisplayProps) {
   if (!transcript) return null;
 
@@ -78,9 +83,18 @@ export default function TranscriptDisplay({
 
       {/* Video Details */}
       <div className="bg-gray-900/50 border border-gray-700 p-6 rounded-2xl shadow-lg">
-        <h2 className="text-xl font-semibold flex items-center gap-2 mb-4">
-          <Video className="w-5 h-5 text-blue-400" /> Video Details
-        </h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold flex items-center gap-2">
+            <Video className="w-5 h-5 text-blue-400" /> Video Details
+          </h2>
+          <button
+            onClick={onVisibilityChange}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition"
+          >
+            <Globe className="w-4 h-4" />
+            Change Visibility
+          </button>
+        </div>
 
         <div className="grid sm:grid-cols-2 gap-4 text-gray-300 text-sm">
           {duration && (
@@ -111,6 +125,11 @@ export default function TranscriptDisplay({
           {guest_name && (
             <p className="flex items-center gap-2">
               <Users className="w-4 h-4 text-gray-400" /> <strong>Guest:</strong> {guest_name}
+            </p>
+          )}
+          {visibility && (
+            <p className="flex items-center gap-2">
+              <Globe className="w-4 h-4 text-gray-400" /> <strong>Visibility:</strong> {visibility}
             </p>
           )}
         </div>

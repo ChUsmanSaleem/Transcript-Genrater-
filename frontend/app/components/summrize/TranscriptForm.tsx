@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Youtube, Loader2 } from "lucide-react";
+import { Youtube, Loader2, Lock, Globe } from "lucide-react";
+import { toast } from "react-toastify";
 
 interface TranscriptFormProps {
   onSubmit: (url: string) => void;
@@ -10,10 +11,27 @@ interface TranscriptFormProps {
 
 export default function TranscriptForm({ onSubmit, loading }: TranscriptFormProps) {
   const [url, setUrl] = useState("");
+  const [visibility, setVisibility] = useState("PRIVATE");
+
+  const isValidYouTubeUrl = (url: string) => {
+    const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[a-zA-Z0-9_-]{11}/;
+    return youtubeRegex.test(url);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!url) return;
+    if (!isValidYouTubeUrl(url)) {
+      toast.error("This link is not valid. Please paste a valid YouTube video link.");
+      return;
+    }
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      toast.error("Please log in to generate transcripts.");
+      // Redirect to login page
+      window.location.href = '/auth/login';
+      return;
+    }
     onSubmit(url);
   };
 
@@ -24,19 +42,21 @@ export default function TranscriptForm({ onSubmit, loading }: TranscriptFormProp
         YouTube Transcript Generator
       </h2>
 
-      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
           placeholder="🎥 Paste YouTube video link..."
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          className="flex-1 p-3 rounded-lg bg-gray-800 text-gray-200 placeholder-gray-500 border border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+          className="w-full p-3 rounded-lg bg-gray-800 text-gray-200 placeholder-gray-500 border border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
         />
+
+
 
         <button
           type="submit"
           disabled={loading}
-          className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition disabled:opacity-70"
+          className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition disabled:opacity-70"
         >
           {loading ? (
             <>

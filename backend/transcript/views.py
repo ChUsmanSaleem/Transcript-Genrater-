@@ -12,8 +12,8 @@ from rest_framework import generics, status, viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .models import Transcript
-from .serializers import TranscriptSerializer, SummarizeSerializer
+from .models import Transcript, Like, Comment, Share, Favorite
+from .serializers import TranscriptSerializer, SummarizeSerializer, CommentSerializer
 import isodate
 
 class HistoryView(viewsets.ModelViewSet):
@@ -116,6 +116,7 @@ class SummarizeView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         youtube_url = serializer.validated_data['youtube_url']
+        visibility = serializer.validated_data.get('visibility', 'PRIVATE')
 
         video_id = extract_video_id(youtube_url)
         if not video_id:
@@ -313,7 +314,8 @@ class SummarizeView(generics.CreateAPIView):
                 quotes=quotes,
                 sentiment=sentiment,
                 host_name=host_name,
-                guest_name=guest_name
+                guest_name=guest_name,
+                visibility=visibility
             )
 
             response_serializer = TranscriptSerializer(transcript_obj)
@@ -321,3 +323,113 @@ class SummarizeView(generics.CreateAPIView):
 
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class PublicFeedView(viewsets.ReadOnlyModelViewSet):
+    serializer_class = TranscriptSerializer
+
+    def get_queryset(self):
+        return Transcript.objects.filter(visibility='PUBLIC').order_by('-created_at')
+
+
+class LikeView(generics.CreateAPIView, generics.DestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def create(self, request, *args, **kwargs):
+        transcript_id = kwargs.get('transcript_id')
+        try:
+            transcript = Transcript.objects.get(id=transcript_id, visibility='PUBLIC')
+            like, created = Like.objects.get_or_create(user=request.user, transcript=transcript)
+            if created:
+                return Response({'message': 'Liked successfully'}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({'message': 'Already liked'}, status=status.HTTP_200_OK)
+        except Transcript.DoesNotExist:
+            return Response({'error': 'Public transcript not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request, *args, **kwargs):
+        transcript_id = kwargs.get('transcript_id')
+        try:
+            transcript = Transcript.objects.get(id=transcript_id, visibility='PUBLIC')
+            like = Like.objects.get(user=request.user, transcript=transcript)
+            like.delete()
+            return Response({'message': 'Unliked successfully'}, status=status.HTTP_204_NO_CONTENT)
+        except Transcript.DoesNotExist:
+            return Response({'error': 'Public transcript not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Like.DoesNotExist:
+            # If like doesn't exist, it's already unliked, so return success
+            return Response({'message': 'Already unliked'}, status=status.HTTP_200_OK)
+
+
+class CommentView(viewsets.ModelViewSet):
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get_queryset(self):
+        transcript_id = self.kwargs.get('transcript_id')
+        if transcript_id:
+            return Comment.objects.filter(transcript_id=transcript_id, transcript__visibility='PUBLIC').order_by('-created_at')
+        return Comment.objects.none()
+
+    def perform_create(self, serializer):
+        transcript_id = self.kwargs.get('transcript_id')
+        try:
+            transcript = Transcript.objects.get(id=transcript_id, visibility='PUBLIC')
+            serializer.save(user=self.request.user, transcript=transcript)
+        except Transcript.DoesNotExist:
+            raise serializers.ValidationError({'error': 'Public transcript not found'})
+
+
+class ShareView(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def create(self, request, *args, **kwargs):
+        transcript_id = kwargs.get('transcript_id')
+        try:
+            transcript = Transcript.objects.get(id=transcript_id, visibility='PUBLIC')
+            Share.objects.create(user=request.user, transcript=transcript)
+            return Response({'message': 'Shared successfully'}, status=status.HTTP_201_CREATED)
+        except Transcript.DoesNotExist:
+            return Response({'error': 'Public transcript not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class FavoriteView(generics.CreateAPIView, generics.DestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def create(self, request, *args, **kwargs):
+        transcript_id = kwargs.get('transcript_id')
+        try:
+            transcript = Transcript.objects.get(id=transcript_id, visibility='PUBLIC')
+            favorite, created = Favorite.objects.get_or_create(user=request.user, transcript=transcript)
+            if created:
+                return Response({'message': 'Favorited successfully'}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({'message': 'Already favorited'}, status=status.HTTP_200_OK)
+        except Transcript.DoesNotExist:
+            return Response({'error': 'Public transcript not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request, *args, **kwargs):
+        transcript_id = kwargs.get('transcript_id')
+        try:
+            transcript = Transcript.objects.get(id=transcript_id, visibility='PUBLIC')
+            favorite = Favorite.objects.get(user=request.user, transcript=transcript)
+            favorite.delete()
+            return Response({'message': 'Unfavorited successfully'}, status=status.HTTP_204_NO_CONTENT)
+        except (Transcript.DoesNotExist, Favorite.DoesNotExist):
+            return Response({'error': 'Favorite not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class FavoritesListView(generics.ListAPIView):
+    serializer_class = TranscriptSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get_queryset(self):
+        return Transcript.objects.filter(
+            favorites__user=self.request.user,
+            visibility='PUBLIC'
+        ).order_by('-favorites__created_at')
