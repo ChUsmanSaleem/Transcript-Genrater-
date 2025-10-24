@@ -14,6 +14,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import Transcript, Like, Comment, Share, Favorite
 from .serializers import TranscriptSerializer, SummarizeSerializer, CommentSerializer
+from users.models import Subscription
 import isodate
 
 class HistoryView(viewsets.ModelViewSet):
@@ -113,6 +114,20 @@ class SummarizeView(generics.CreateAPIView):
     authentication_classes = [JWTAuthentication]
 
     def create(self, request, *args, **kwargs):
+        # Check subscription limit
+        user_transcripts_count = Transcript.objects.filter(user=request.user).count()
+        try:
+            subscription = request.user.subscription
+            has_active_subscription = subscription.is_active
+        except Subscription.DoesNotExist:
+            has_active_subscription = False
+
+        if not has_active_subscription and user_transcripts_count >= 2:
+            return Response({
+                'error': 'Free limit reached. You can only create 2 transcripts. Please subscribe for unlimited access.',
+                'upgrade_required': True
+            }, status=status.HTTP_403_FORBIDDEN)
+
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         youtube_url = serializer.validated_data['youtube_url']

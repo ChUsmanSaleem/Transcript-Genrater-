@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { LogOut, Youtube, History, Globe, Star, Menu, X, LogIn } from 'lucide-react';
 import { toast } from 'react-toastify';
+import SubscriptionButton from '../subscription/SubscriptionButton';
 
 interface NaveBarProps {
   onLogout?: () => void;
@@ -117,6 +118,8 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
             Favorites
           </Link>
 
+          {isLoggedIn && <SubscriptionButton />}
+
           {isLoggedIn ? (
             <button
               onClick={handleLogoutClick}
@@ -213,6 +216,8 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
             <Star className="w-5 h-5" /> Favorites
           </Link>
 
+          {isLoggedIn && <SubscriptionButton />}
+
           {isLoggedIn ? (
             <button
               onClick={() => {
@@ -234,7 +239,7 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
               <LogIn className="w-5 h-5" /> Login
             </button>
 
-            
+
           )}
         </div>
       </div>

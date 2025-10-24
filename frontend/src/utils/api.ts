@@ -1,4 +1,8 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+let API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+while (/\/api(\/)?$/.test(API_BASE_URL)) {
+  API_BASE_URL = API_BASE_URL.replace(/\/api(\/)?$/, '');
+}
+API_BASE_URL = API_BASE_URL.replace(/\/$/, '') + '/';
 
 interface SignupData {
   username: string;
@@ -374,6 +378,83 @@ export async function updateTranscriptVisibility(transcriptId: number, visibilit
       'Authorization': `Bearer ${token}`,
     },
     body: JSON.stringify({ visibility }),
+  });
+  return response.json();
+}
+
+export async function createSubscription(paymentMethodId?: string): Promise<{ client_secret?: string; subscription_id?: string; status?: string; error?: string }> {
+  const token = localStorage.getItem('access_token');
+  const response = await fetch(`${API_BASE_URL}api/users/create-subscription/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify({ payment_method_id: paymentMethodId }),
+  });
+  return response.json();
+}
+
+
+
+export async function addPaymentMethod(paymentMethodId: string): Promise<{ message?: string; error?: string }> {
+  const token = localStorage.getItem('access_token');
+  const response = await fetch(`${API_BASE_URL}api/users/add-payment-method/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify({ payment_method_id: paymentMethodId }),
+  });
+  return response.json();
+}
+
+export async function listPaymentMethods(): Promise<{
+  id: number;
+  stripe_payment_method_id: string;
+  card_brand: string;
+  last4: string;
+  exp_month: number;
+  exp_year: number;
+  is_default: boolean;
+  created_at: string;
+}[]> {
+  const token = localStorage.getItem('access_token');
+  const response = await fetch(`${API_BASE_URL}api/users/payment-methods/`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+  return response.json();
+}
+
+export async function getSubscriptionStatus(): Promise<{
+  status: string;
+  current_period_start?: string;
+  current_period_end?: string;
+  canceled_at?: string;
+  is_active: boolean;
+  error?: string;
+}> {
+  const token = localStorage.getItem('access_token');
+  const response = await fetch(`${API_BASE_URL}api/users/subscription-status/`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+  return response.json();
+}
+
+export async function cancelSubscription(): Promise<{ message?: string; error?: string }> {
+  const token = localStorage.getItem('access_token');
+  const response = await fetch(`${API_BASE_URL}api/users/cancel-subscription/`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
   });
   return response.json();
 }
