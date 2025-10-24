@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Lock, Globe } from "lucide-react";
+import { Lock, Globe, X } from "lucide-react";
 import TranscriptForm from "../summrize/TranscriptForm";
 import TranscriptDisplay from "../summrize/TranscriptDisplay";
 import DownloadButtons from "../summrize/DownloadButtons";
@@ -74,21 +74,27 @@ export default function Page() {
         <TranscriptForm onSubmit={generateSummary} loading={loading} />
 
         {showVisibilityModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-gray-900 border border-gray-700 rounded-2xl shadow-xl p-6 max-w-md w-full mx-4">
+          <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-gray-900 border border-gray-700 rounded-2xl shadow-xl p-6 max-w-md w-full mx-4 relative">
+              <button
+                onClick={() => setShowVisibilityModal(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
               <h3 className="text-xl font-semibold text-white mb-4">Set Transcript Visibility</h3>
               <p className="text-gray-300 mb-6">Choose whether this transcript should be public or private.</p>
               <div className="flex gap-3">
                 <button
                   onClick={() => updateVisibility("PRIVATE")}
-                  className="flex-1 flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg font-medium transition"
+                  className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-4 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
                 >
                   <Lock className="w-4 h-4" />
                   Private
                 </button>
                 <button
                   onClick={() => updateVisibility("PUBLIC")}
-                  className="flex-1 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-medium transition"
+                  className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-4 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
                 >
                   <Globe className="w-4 h-4" />
                   Public

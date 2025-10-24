@@ -11,6 +11,7 @@ import {
   CheckCircle2,
   Eye,
   EyeOff,
+  CheckCircle,
 } from "lucide-react";
 import { toast } from "react-toastify";
 
@@ -37,11 +38,11 @@ export default function SignupForm() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen  from-gray-950 to-gray-900 px-4">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-md bg-gray-900/70 backdrop-blur-lg border border-gray-800 p-8 rounded-2xl shadow-2xl space-y-6 transition-all duration-300"
-      >
+    <div className="flex items-center justify-center min-h-screen w-full from-gray-950 to-gray-900 px-4">
+      <div className="flex flex-col md:flex-row items-stretch w-full max-w-5xl bg-gray-900/80 backdrop-blur-lg border border-gray-800 rounded-2xl shadow-2xl overflow-hidden">
+        {/* LEFT SIDE - SIGNUP FORM */}
+        <div className="w-full md:w-1/2 p-8 flex flex-col justify-center">
+          <form onSubmit={handleSubmit} className="space-y-6">
         {/* Title */}
         <div className="text-center mb-4">
           <h2 className="text-2xl font-bold text-white flex items-center justify-center gap-2">
@@ -136,7 +137,7 @@ export default function SignupForm() {
             <p className="text-center text-gray-400 text-sm mt-4">
               Already have an account?{" "}
               <Link
-                href="/"
+                href="/auth/login"
                 className="text-blue-400 hover:underline font-medium"
               >
                 Login
@@ -144,7 +145,38 @@ export default function SignupForm() {
             </p>
           </>
         )}
-      </form>
+          </form>
+        </div>
+
+        {/* RIGHT SIDE - BENEFITS */}
+        <div className="hidden md:flex w-full md:w-1/2 flex-col justify-center bg-gradient-to-br from-blue-700/10 via-purple-700/10 to-indigo-800/10 border-l border-gray-800 p-8 text-left">
+          <h2 className="text-2xl font-bold text-blue-400 mb-5">
+            Why Use Transcript Generator?
+          </h2>
+          <ul className="space-y-4 text-gray-300">
+            <li className="flex items-start gap-3">
+              <CheckCircle className="w-5 h-5 text-green-400 mt-1" />
+              <span>AI-powered YouTube video summaries in seconds.</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <CheckCircle className="w-5 h-5 text-green-400 mt-1" />
+              <span>Secure and private transcript storage.</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <CheckCircle className="w-5 h-5 text-green-400 mt-1" />
+              <span>Download summaries as PDF or Word files.</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <CheckCircle className="w-5 h-5 text-green-400 mt-1" />
+              <span>Powered by Gemini and YouTube Data APIs.</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <CheckCircle className="w-5 h-5 text-green-400 mt-1" />
+              <span>Share and explore public transcripts.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }

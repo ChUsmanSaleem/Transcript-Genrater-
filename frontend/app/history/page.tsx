@@ -95,7 +95,7 @@ export default function HistoryPage() {
       <div className="p-6">
         <div className="flex items-center justify-center gap-2 mb-6">
           <Clock className="w-6 h-6 text-blue-400" />
-          <h1 className="text-3xl font-bold text-center">Your Summary History</h1>
+          <h1 className="text-3xl font-bold text-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Your Summary History</h1>
         </div>
 
         {loading ? (

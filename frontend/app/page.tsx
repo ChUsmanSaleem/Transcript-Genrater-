@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Video, Search, Loader2, Newspaper } from "lucide-react"; 
+import { Video, Search, Loader2, Newspaper } from "lucide-react";
 import NaveBar from "./components/navebar/NaveBar";
 import TranscriptForm from "./components/summrize/TranscriptForm";
 import PublicTranscriptCard from "./components/public-feed/PublicTranscriptCard";
@@ -80,7 +80,7 @@ export default function Home() {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-10 text-center lg:text-left">
           <div className="flex flex-col sm:flex-row items-center gap-3 justify-center lg:justify-start">
             <Video className="w-8 h-8 text-blue-400" />
-            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+            <h1 className="text-3xl font-bold text-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               YouTube Transcript Generator
             </h1>
           </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Heart, MessageCircle, Share, Star, Lock, Globe, ChevronDown, ChevronUp, User } from "lucide-react";
+import { Heart, MessageCircle, Share, Star, Lock, Globe, ChevronDown, ChevronUp, User, Facebook } from "lucide-react";
 import { likeTranscript, unlikeTranscript, favoriteTranscript, unfavoriteTranscript, shareTranscript, addComment, fetchComments } from "../../../src/utils/api";
 import { toast } from "react-toastify";
 import TranscriptExpandedView from "../transcriptExpandedDetails/TranscriptExpandedView";
@@ -191,7 +191,7 @@ export default function PublicTranscriptCard({ transcript, onUpdate }: PublicTra
   };
 
   return (
-    <div className="bg-gray-900 rounded-lg p-4 sm:p-6 shadow-lg">
+    <div className="bg-gray-900 hover:bg-gray-800 rounded-lg p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer" onClick={() => setExpanded(!expanded)}>
       <div className="flex flex-col sm:flex-row items-start gap-4">
         {transcript.thumbnail_url && (
           <img
@@ -217,7 +217,7 @@ export default function PublicTranscriptCard({ transcript, onUpdate }: PublicTra
           <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-400">
             {isLoggedIn ? (
               <button
-                onClick={handleLike}
+                onClick={(e) => { e.stopPropagation(); handleLike(); }}
                 disabled={loading}
                 className={`flex items-center gap-1 transition-colors ${
                   transcript.is_liked ? 'text-red-400' : 'text-gray-400 hover:text-red-400'
@@ -235,7 +235,7 @@ export default function PublicTranscriptCard({ transcript, onUpdate }: PublicTra
 
             {isLoggedIn ? (
               <button
-                onClick={() => setShowComments(!showComments)}
+                onClick={(e) => { e.stopPropagation(); setShowComments(!showComments); }}
                 className="flex items-center gap-1 text-gray-400 hover:text-blue-400 transition-colors"
               >
                 <MessageCircle className="w-4 h-4" />
@@ -250,7 +250,7 @@ export default function PublicTranscriptCard({ transcript, onUpdate }: PublicTra
 
             {isLoggedIn ? (
               <button
-                onClick={() => setShowSharePopup(!showSharePopup)}
+                onClick={(e) => { e.stopPropagation(); setShowSharePopup(!showSharePopup); }}
                 className="flex items-center gap-1 text-gray-400 hover:text-blue-400 transition-colors"
               >
                 <Share className="w-4 h-4" />
@@ -265,7 +265,7 @@ export default function PublicTranscriptCard({ transcript, onUpdate }: PublicTra
 
             {isLoggedIn ? (
               <button
-                onClick={handleFavorite}
+                onClick={(e) => { e.stopPropagation(); handleFavorite(); }}
                 disabled={loading}
                 className={`flex items-center gap-1 transition-colors ${
                   transcript.is_favorited ? 'text-yellow-400' : 'text-gray-400 hover:text-yellow-400'
@@ -282,7 +282,7 @@ export default function PublicTranscriptCard({ transcript, onUpdate }: PublicTra
             )}
 
             <button
-              onClick={() => setExpanded(!expanded)}
+              onClick={(e) => { e.stopPropagation(); setExpanded(!expanded); }}
               className="flex items-center gap-1 text-gray-400 hover:text-blue-400 transition-colors"
             >
               {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -299,18 +299,21 @@ export default function PublicTranscriptCard({ transcript, onUpdate }: PublicTra
                     onClick={() => handleShareToPlatform('whatsapp')}
                     className="flex items-center gap-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded text-sm transition-colors"
                   >
+                    <MessageCircle className="w-4 h-4" />
                     WhatsApp
                   </button>
                   <button
                     onClick={() => handleShareToPlatform('facebook')}
                     className="flex items-center gap-2 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm transition-colors"
                   >
+                    <Facebook className="w-4 h-4" />
                     Facebook
                   </button>
                   <button
                     onClick={() => handleShareToPlatform('messenger')}
                     className="flex items-center gap-2 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded text-sm transition-colors"
                   >
+                    <MessageCircle className="w-4 h-4" />
                     Messenger
                   </button>
                 </div>

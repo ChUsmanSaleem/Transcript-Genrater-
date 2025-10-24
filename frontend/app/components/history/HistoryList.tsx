@@ -111,7 +111,8 @@ export default function HistoryList({ history, onDelete, onUpdateVisibility }: H
       {history.map(item => (
         <div
           key={item.id}
-          className="bg-gray-900/60 border border-gray-700 rounded-2xl shadow-lg overflow-hidden hover:border-blue-700 transition-all duration-300"
+          className="bg-gray-900/60 hover:bg-gray-800 border border-gray-700 rounded-2xl shadow-lg hover:shadow-xl overflow-hidden hover:border-blue-700 transition-all duration-300 cursor-pointer"
+          onClick={() => toggleExpanded(item.id)}
         >
           {/* Header Section */}
           <div className="p-4 sm:p-6">
@@ -178,7 +179,7 @@ export default function HistoryList({ history, onDelete, onUpdateVisibility }: H
               {/* Buttons (Right Side / Bottom on Mobile) */}
               <div className="flex justify-end sm:flex-col sm:justify-between gap-2 sm:gap-3">
                 <button
-                  onClick={() => handleDelete(item.id)}
+                  onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }}
                   disabled={deletingItems.has(item.id)}
                   className="flex items-center justify-center gap-1 text-red-400 hover:text-red-300 transition-colors disabled:opacity-50"
                   title="Delete summary"
@@ -187,7 +188,7 @@ export default function HistoryList({ history, onDelete, onUpdateVisibility }: H
                 </button>
 
                 <button
-                  onClick={() => handleToggleVisibility(item.id, item.visibility)}
+                  onClick={(e) => { e.stopPropagation(); handleToggleVisibility(item.id, item.visibility); }}
                   className={`flex items-center justify-center gap-1 transition-colors ${
                     item.visibility === 'PUBLIC'
                       ? 'text-green-400 hover:text-green-300'
@@ -203,7 +204,7 @@ export default function HistoryList({ history, onDelete, onUpdateVisibility }: H
                 </button>
 
                 <button
-                  onClick={() => toggleExpanded(item.id)}
+                  onClick={(e) => { e.stopPropagation(); toggleExpanded(item.id); }}
                   className="flex items-center justify-center gap-1 text-blue-400 hover:text-blue-300 transition-colors"
                 >
                   {expandedItems.has(item.id) ? (
@@ -235,9 +236,12 @@ export default function HistoryList({ history, onDelete, onUpdateVisibility }: H
       {deleteModal.show && deleteModal.id !== null && (() => {
         const itemToDelete = history.find(item => item.id === deleteModal.id);
         return (
-          <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
             <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 max-w-sm w-full mx-4">
-              <h3 className="text-lg font-semibold text-white mb-4">Confirm Delete</h3>
+              <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <Trash2 className="w-5 h-5 text-red-400" />
+                Confirm Delete
+              </h3>
               <p className="text-gray-300 mb-6">Are you sure you want to delete <span className="font-bold">"{itemToDelete?.title || 'Untitled Video'}"</span>? This action cannot be undone.</p>
               <div className="flex justify-end gap-3">
                 <button

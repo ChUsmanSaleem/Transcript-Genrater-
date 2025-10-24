@@ -56,19 +56,19 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
     <nav className="bg-gray-900/80 backdrop-blur-md border-b border-gray-800 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center px-4 md:px-8 py-4">
         {/* Logo and Title */}
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/public-feed" className="flex items-center gap-2">
           <Youtube className="w-7 h-7 text-red-500" />
-          <h1 className="text-lg sm:text-xl font-semibold text-white tracking-wide">
+          <h1 className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent tracking-wide">
             YT Video Summarizer
           </h1>
         </Link>
 
         {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-2 sm:gap-4">
           <Link
             href={isLoggedIn ? "/public-feed" : "#"}
             onClick={(e) => !isLoggedIn && e.preventDefault()}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+            className={`flex items-center gap-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:bg-gray-700 ${
               isLoggedIn
                 ? "text-gray-300 hover:text-white"
                 : "text-gray-500 cursor-not-allowed"
@@ -81,7 +81,7 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
           <Link
             href={isLoggedIn ? "/summarizer" : "#"}
             onClick={(e) => !isLoggedIn && e.preventDefault()}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+            className={`flex items-center gap-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:bg-gray-700 ${
               isLoggedIn
                 ? "text-gray-300 hover:text-white"
                 : "text-gray-500 cursor-not-allowed"
@@ -94,7 +94,7 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
           <Link
             href={isLoggedIn ? "/history" : "#"}
             onClick={(e) => !isLoggedIn && e.preventDefault()}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+            className={`flex items-center gap-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:bg-gray-700 ${
               isLoggedIn
                 ? "text-gray-300 hover:text-white"
                 : "text-gray-500 cursor-not-allowed"
@@ -107,7 +107,7 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
           <Link
             href={isLoggedIn ? "/favorite" : "#"}
             onClick={(e) => !isLoggedIn && e.preventDefault()}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+            className={`flex items-center gap-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:bg-gray-700 ${
               isLoggedIn
                 ? "text-gray-300 hover:text-white"
                 : "text-gray-500 cursor-not-allowed"
@@ -123,7 +123,7 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
           {isLoggedIn ? (
             <button
               onClick={handleLogoutClick}
-              className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200"
+              className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-2 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
             >
               <LogOut className="w-4 h-4" />
               Logout
@@ -131,7 +131,7 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
           ) : (
             <button
               onClick={handleLoginClick}
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200"
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-2 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
             >
               <LogIn className="w-4 h-4" />
               Login
@@ -161,7 +161,7 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
               if (!isLoggedIn) e.preventDefault();
               closeMenu();
             }}
-            className={`flex items-center gap-2 text-lg transition-all ${
+            className={`flex items-center gap-2 text-lg transition-all hover:bg-gray-700 px-3 py-2 rounded-lg ${
               isLoggedIn
                 ? "text-gray-300 hover:text-white"
                 : "text-gray-500 cursor-not-allowed"
@@ -176,7 +176,7 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
               if (!isLoggedIn) e.preventDefault();
               closeMenu();
             }}
-            className={`flex items-center gap-2 text-lg transition-all ${
+            className={`flex items-center gap-2 text-lg transition-all hover:bg-gray-700 px-3 py-2 rounded-lg ${
               isLoggedIn
                 ? "text-gray-300 hover:text-white"
                 : "text-gray-500 cursor-not-allowed"
@@ -191,7 +191,7 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
               if (!isLoggedIn) e.preventDefault();
               closeMenu();
             }}
-            className={`flex items-center gap-2 text-lg transition-all ${
+            className={`flex items-center gap-2 text-lg transition-all hover:bg-gray-700 px-3 py-2 rounded-lg ${
               isLoggedIn
                 ? "text-gray-300 hover:text-white"
                 : "text-gray-500 cursor-not-allowed"
@@ -206,7 +206,7 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
               if (!isLoggedIn) e.preventDefault();
               closeMenu();
             }}
-            className={`flex items-center gap-2 text-lg transition-all ${
+            className={`flex items-center gap-2 text-lg transition-all hover:bg-gray-700 px-3 py-2 rounded-lg ${
               isLoggedIn
                 ? "text-gray-300 hover:text-white"
                 : "text-gray-500 cursor-not-allowed"
@@ -224,7 +224,7 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
                 handleLogoutClick();
                 closeMenu();
               }}
-              className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg font-medium transition-all"
+              className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-3 sm:px-5 py-2 rounded-lg font-medium transition-all transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
             >
               <LogOut className="w-5 h-5" /> Logout
             </button>
@@ -234,7 +234,7 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
                 handleLoginClick();
                 closeMenu();
               }}
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium transition-all"
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-5 py-2 rounded-lg font-medium transition-all transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
             >
               <LogIn className="w-5 h-5" /> Login
             </button>

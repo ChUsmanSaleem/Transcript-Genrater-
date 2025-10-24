@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef } from 'react';
-import { X } from 'lucide-react';
+import { X, Check } from 'lucide-react';
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -43,7 +43,7 @@ export default function ConfirmationModal({
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50"
       role="dialog"
       aria-modal="true"
       aria-labelledby="confirmation-modal-title"
@@ -51,11 +51,12 @@ export default function ConfirmationModal({
     >
       <div
         ref={modalRef}
-        className="bg-gray-900 border border-gray-700 rounded-2xl shadow-xl p-6 max-w-md w-full mx-4"
+        className="bg-gray-900 border border-gray-700 rounded-2xl shadow-xl p-4 sm:p-6 max-w-md w-full mx-4"
         tabIndex={-1}
       >
         <div className="flex justify-between items-center mb-4">
-          <h3 id="confirmation-modal-title" className="text-xl font-semibold text-white">
+          <h3 id="confirmation-modal-title" className="text-xl font-semibold text-white flex items-center gap-2">
+            <X className="w-6 h-6 text-red-500" />
             {title}
           </h3>
           <button onClick={onClose} className="text-gray-400 hover:text-white" aria-label="Close modal">
@@ -65,11 +66,12 @@ export default function ConfirmationModal({
 
         <p className="text-gray-300 mb-6">{message}</p>
 
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
           <button
             onClick={onClose}
-            className="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition"
+            className="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition flex items-center justify-center gap-2 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
           >
+            <X className="w-4 h-4" />
             {cancelText}
           </button>
           <button
@@ -77,8 +79,9 @@ export default function ConfirmationModal({
               onConfirm();
               onClose();
             }}
-            className="flex-1 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition"
+            className="flex-1 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition flex items-center justify-center gap-2 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
           >
+            <Check className="w-4 h-4" />
             {confirmText}
           </button>
         </div>
