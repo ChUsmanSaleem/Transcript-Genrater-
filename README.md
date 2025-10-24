@@ -49,10 +49,8 @@ This project — **YouTube Transcript & Summary Generator** — solves that by:
 | **Payments** | Stripe API |
 | **Database** | PostgreSQL |
 | **Auth System** | JWT Authentication |
-| **Hosting** | Vercel (Frontend) + Render/Railway (Backend) |
 
 
 <img width="1344" height="641" alt="image" src="https://github.com/user-attachments/assets/e5d2eca1-5a44-4c41-a1e1-5c5da52ff795" />
 
-## 🗂️ Project Structure
 
