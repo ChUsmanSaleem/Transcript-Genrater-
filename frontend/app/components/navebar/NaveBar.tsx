@@ -156,7 +156,7 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
       >
         <div className="flex flex-col items-center py-4 space-y-3">
           <Link
-            href={isLoggedIn ? "/" : "#"}
+            href={isLoggedIn ? "/public-feed" : "#"}
             onClick={(e) => {
               if (!isLoggedIn) e.preventDefault();
               closeMenu();
@@ -238,8 +238,6 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
             >
               <LogIn className="w-5 h-5" /> Login
             </button>
-
-
           )}
         </div>
       </div>

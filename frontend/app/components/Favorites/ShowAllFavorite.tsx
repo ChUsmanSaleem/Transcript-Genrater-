@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Star, Loader2, FileText } from "lucide-react";
+import { Star, Loader2, FileText,AlertCircle } from "lucide-react";
 import NaveBar from "../navebar/NaveBar";
 import PublicTranscriptCard from "../public-feed/PublicTranscriptCard";
 import SearchField from "../searching/SearchField";
@@ -91,6 +91,7 @@ export default function ShowAllFavorite() {
           <>
             {filteredTranscripts.length === 0 && searchQuery ? (
               <div className="flex flex-col items-center justify-center text-gray-400 py-8">
+                <AlertCircle className="w-8 h-8 mb-2" />
                 <p>No transcripts found matching "{searchQuery}"</p>
               </div>
             ) : (

@@ -96,7 +96,7 @@ export default function Home() {
         <div className="mt-10">
           <div className="flex items-center justify-center gap-3 mb-8">
             <Newspaper className="text-yellow-400 w-6 h-6" />
-            <h2 className="text-2xl sm:text-3xl font-semibold text-center">
+            <h2 className="text-3xl font-bold flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Public Transcripts
             </h2>
           </div>

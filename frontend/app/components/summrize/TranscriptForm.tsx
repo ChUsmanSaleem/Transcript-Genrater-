@@ -59,7 +59,7 @@ export default function TranscriptForm({ onSubmit, loading }: TranscriptFormProp
     <div className="max-w-lg mx-auto mt-10 bg-gradient-to-br from-gray-900/80 via-gray-800/70 to-gray-900/80 backdrop-blur-lg border border-gray-600/50 rounded-3xl shadow-2xl p-8 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 via-transparent to-blue-500/10 rounded-3xl"></div>
       <div className="relative z-10">
-        <h2 className="flex items-center justify-center gap-3 text-3xl font-bold text-white mb-8 bg-gradient-to-r from-red-400 to-blue-400 bg-clip-text text-transparent">
+        <h2 className="flex items-center justify-center gap-3 text-3xl font-bold  mb-8 bg-gradient-to-r from-red-400 to-blue-400 bg-clip-text text-transparent">
           <Youtube className="w-8 h-8 text-red-500 animate-pulse" />
           YouTube Transcript Generator
         </h2>

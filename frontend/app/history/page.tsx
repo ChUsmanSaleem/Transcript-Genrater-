@@ -5,7 +5,7 @@ import HistoryList from '../components/history/HistoryList';
 import NaveBar from '../components/navebar/NaveBar';
 import SearchField from '../components/searching/SearchField';
 import { toast } from 'react-toastify';
-import { Clock, Youtube, Loader2, FileText } from 'lucide-react'; 
+import { Clock, Youtube, Loader2, FileText, AlertCircle } from 'lucide-react'; 
 
 interface TranscriptData {
   id: number;
@@ -119,7 +119,7 @@ export default function HistoryPage() {
             </div>
               {filteredHistory.length === 0 && searchQuery ? (
                 <div className="flex flex-col items-center justify-center text-gray-400 py-8">
-                  <FileText className="w-10 h-10 text-gray-500 mb-2" />
+                  <AlertCircle className="w-8 h-8 mb-2" />
                   <p>No summaries found matching "{searchQuery}"</p>
                 </div>
               ) : (
