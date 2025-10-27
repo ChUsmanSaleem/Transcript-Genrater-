@@ -191,13 +191,13 @@ export default function PublicTranscriptCard({ transcript, onUpdate }: PublicTra
   };
 
   return (
-    <div className="bg-gray-900 hover:bg-gray-800 rounded-lg p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer" onClick={() => setExpanded(!expanded)}>
-      <div className="flex flex-col sm:flex-row items-start gap-4">
+    <div className="bg-gray-900 hover:bg-gray-800 rounded-lg p-3 sm:p-4 md:p-6 shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer" onClick={() => setExpanded(!expanded)}>
+      <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
         {transcript.thumbnail_url && (
           <img
             src={transcript.thumbnail_url}
             alt={transcript.title}
-            className="w-full sm:w-24 h-32 sm:h-16 object-cover rounded"
+            className="w-32 h-20 sm:w-24 sm:h-16 md:w-28 md:h-20 object-cover rounded flex-shrink-0"
           />
         )}
 
@@ -294,7 +294,7 @@ export default function PublicTranscriptCard({ transcript, onUpdate }: PublicTra
             <div className="mt-4 w-full">
               <div className="bg-gray-800 rounded-lg p-4 shadow-lg">
                 <h4 className="text-white text-sm font-semibold mb-3">Share this transcript</h4>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => handleShareToPlatform('whatsapp')}
                     className="flex items-center gap-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded text-sm transition-colors"

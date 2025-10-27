@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { LogOut, Youtube, History, Globe, Star, Menu, X, LogIn } from 'lucide-react';
@@ -16,6 +16,7 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const checkLogin = () => {
@@ -32,11 +33,20 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
     window.addEventListener('storage', handleStorageChange);
     window.addEventListener('focus', handleFocus);
 
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node) && menuOpen) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('focus', handleFocus);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [menuOpen]);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => setMenuOpen(false);
@@ -53,7 +63,7 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
   };
 
   return (
-    <nav className="bg-gray-900/80 backdrop-blur-md border-b border-gray-800 sticky top-0 z-50">
+    <nav className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center px-4 md:px-8 py-4">
         {/* Logo and Title */}
         <Link href="/public-feed" className="flex items-center gap-2">
@@ -64,58 +74,49 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
         </Link>
 
         {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-2 sm:gap-4">
+        <div className="hidden md:flex items-center gap-3 sm:gap-5">
           <Link
             href={isLoggedIn ? "/public-feed" : "#"}
             onClick={(e) => !isLoggedIn && e.preventDefault()}
-            className={`flex items-center gap-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:bg-gray-700 ${
-              isLoggedIn
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all hover:bg-gray-700 ${isLoggedIn
                 ? "text-gray-300 hover:text-white"
                 : "text-gray-500 cursor-not-allowed"
-            }`}
-            title={!isLoggedIn ? "Login required" : ""}
+              }`}
           >
-            <Globe className="w-4 h-4" />
-            Public Summaries
+            <Globe className="w-4 h-4" /> Public Summaries
           </Link>
+
           <Link
             href={isLoggedIn ? "/summarizer" : "#"}
             onClick={(e) => !isLoggedIn && e.preventDefault()}
-            className={`flex items-center gap-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:bg-gray-700 ${
-              isLoggedIn
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all hover:bg-gray-700 ${isLoggedIn
                 ? "text-gray-300 hover:text-white"
                 : "text-gray-500 cursor-not-allowed"
-            }`}
-            title={!isLoggedIn ? "Login required" : ""}
+              }`}
           >
-            <Youtube className="w-4 h-4" />
-            Summarizer
+            <Youtube className="w-4 h-4" /> Summarizer
           </Link>
+
           <Link
             href={isLoggedIn ? "/history" : "#"}
             onClick={(e) => !isLoggedIn && e.preventDefault()}
-            className={`flex items-center gap-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:bg-gray-700 ${
-              isLoggedIn
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all hover:bg-gray-700 ${isLoggedIn
                 ? "text-gray-300 hover:text-white"
                 : "text-gray-500 cursor-not-allowed"
-            }`}
-            title={!isLoggedIn ? "Login required" : ""}
+              }`}
           >
-            <History className="w-4 h-4" />
-            History
+            <History className="w-4 h-4" /> History
           </Link>
+
           <Link
             href={isLoggedIn ? "/favorite" : "#"}
             onClick={(e) => !isLoggedIn && e.preventDefault()}
-            className={`flex items-center gap-2 px-2 sm:px-3 py-2 rounded-lg transition-all duration-200 hover:bg-gray-700 ${
-              isLoggedIn
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all hover:bg-gray-700 ${isLoggedIn
                 ? "text-gray-300 hover:text-white"
                 : "text-gray-500 cursor-not-allowed"
-            }`}
-            title={!isLoggedIn ? "Login required" : ""}
+              }`}
           >
-            <Star className="w-4 h-4" />
-            Favorites
+            <Star className="w-4 h-4" /> Favorites
           </Link>
 
           {isLoggedIn && <SubscriptionButton />}
@@ -123,18 +124,16 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
           {isLoggedIn ? (
             <button
               onClick={handleLogoutClick}
-              className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-2 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
+              className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-all transform hover:scale-105 active:scale-95 shadow-lg"
             >
-              <LogOut className="w-4 h-4" />
-              Logout
+              <LogOut className="w-4 h-4" /> Logout
             </button>
           ) : (
             <button
               onClick={handleLoginClick}
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-2 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all transform hover:scale-105 active:scale-95 shadow-lg"
             >
-              <LogIn className="w-4 h-4" />
-              Login
+              <LogIn className="w-4 h-4" /> Login
             </button>
           )}
         </div>
@@ -145,73 +144,69 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
           className="md:hidden text-gray-300 hover:text-white transition-colors"
           aria-label="Toggle menu"
         >
-          {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          <Menu className="w-6 h-6" />
         </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Sidebar Menu (Right Side) */}
       <div
-        className={`md:hidden fixed top-16 left-0 w-full bg-gray-900/95 backdrop-blur-md border-t border-gray-800 shadow-lg transform transition-all duration-300 ${menuOpen ? 'translate-y-0 opacity-100' : '-translate-y-10 opacity-0 pointer-events-none'
-          }`}
+        ref={menuRef}
+        className={`fixed top-0 right-0 h-full w-3/4 sm:w-2/5 bg-gray-900 text-white border-l border-gray-800 shadow-xl transform transition-transform duration-300 ease-in-out z-50 ${menuOpen ? 'translate-x-0' : 'translate-x-full'
+          } md:hidden`}
       >
-        <div className="flex flex-col items-center py-4 space-y-3">
+        <div className="flex flex-col h-full py-6 px-5 space-y-4">
           <Link
             href={isLoggedIn ? "/public-feed" : "#"}
             onClick={(e) => {
               if (!isLoggedIn) e.preventDefault();
               closeMenu();
             }}
-            className={`flex items-center gap-2 text-lg transition-all hover:bg-gray-700 px-3 py-2 rounded-lg ${
-              isLoggedIn
+            className={`flex items-center gap-2 text-lg hover:bg-gray-800 px-3 py-2 rounded-lg ${isLoggedIn
                 ? "text-gray-300 hover:text-white"
                 : "text-gray-500 cursor-not-allowed"
-            }`}
-            title={!isLoggedIn ? "Login required" : ""}
+              }`}
           >
             <Globe className="w-5 h-5" /> Public Summaries
           </Link>
+
           <Link
             href={isLoggedIn ? "/summarizer" : "#"}
             onClick={(e) => {
               if (!isLoggedIn) e.preventDefault();
               closeMenu();
             }}
-            className={`flex items-center gap-2 text-lg transition-all hover:bg-gray-700 px-3 py-2 rounded-lg ${
-              isLoggedIn
+            className={`flex items-center gap-2 text-lg hover:bg-gray-800 px-3 py-2 rounded-lg ${isLoggedIn
                 ? "text-gray-300 hover:text-white"
                 : "text-gray-500 cursor-not-allowed"
-            }`}
-            title={!isLoggedIn ? "Login required" : ""}
+              }`}
           >
             <Youtube className="w-5 h-5" /> Summarizer
           </Link>
+
           <Link
             href={isLoggedIn ? "/history" : "#"}
             onClick={(e) => {
               if (!isLoggedIn) e.preventDefault();
               closeMenu();
             }}
-            className={`flex items-center gap-2 text-lg transition-all hover:bg-gray-700 px-3 py-2 rounded-lg ${
-              isLoggedIn
+            className={`flex items-center gap-2 text-lg hover:bg-gray-800 px-3 py-2 rounded-lg ${isLoggedIn
                 ? "text-gray-300 hover:text-white"
                 : "text-gray-500 cursor-not-allowed"
-            }`}
-            title={!isLoggedIn ? "Login required" : ""}
+              }`}
           >
             <History className="w-5 h-5" /> History
           </Link>
+
           <Link
             href={isLoggedIn ? "/favorite" : "#"}
             onClick={(e) => {
               if (!isLoggedIn) e.preventDefault();
               closeMenu();
             }}
-            className={`flex items-center gap-2 text-lg transition-all hover:bg-gray-700 px-3 py-2 rounded-lg ${
-              isLoggedIn
+            className={`flex items-center gap-2 text-lg hover:bg-gray-800 px-3 py-2 rounded-lg ${isLoggedIn
                 ? "text-gray-300 hover:text-white"
                 : "text-gray-500 cursor-not-allowed"
-            }`}
-            title={!isLoggedIn ? "Login required" : ""}
+              }`}
           >
             <Star className="w-5 h-5" /> Favorites
           </Link>
@@ -224,7 +219,7 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
                 handleLogoutClick();
                 closeMenu();
               }}
-              className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-3 sm:px-5 py-2 rounded-lg font-medium transition-all transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
+              className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium mt-auto transition-all transform hover:scale-105 active:scale-95 shadow-lg"
             >
               <LogOut className="w-5 h-5" /> Logout
             </button>
@@ -234,7 +229,7 @@ const NaveBar: React.FC<NaveBarProps> = ({ onLogout }) => {
                 handleLoginClick();
                 closeMenu();
               }}
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-5 py-2 rounded-lg font-medium transition-all transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium mt-auto transition-all transform hover:scale-105 active:scale-95 shadow-lg"
             >
               <LogIn className="w-5 h-5" /> Login
             </button>
