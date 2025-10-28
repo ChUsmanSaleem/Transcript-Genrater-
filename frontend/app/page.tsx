@@ -73,10 +73,10 @@ export default function Home() {
   );
 
   return (
-    <div className="min-h-screen  from-gray-900 via-gray-850 to-gray-950 text-white">
+    <div className="min-h-screen  from-gray-900 via-gray-850 to-gray-950 text-white ">
       <NaveBar />
 
-      <div className="px-4 sm:px-6 lg:px-12 py-10">
+      <div className="px-4 sm:px-6 lg:px-12 py-6">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-10 text-center lg:text-left">
           <div className="flex flex-col sm:flex-row items-center gap-3 justify-center lg:justify-start">
             <Video className="w-8 h-8 text-blue-400" />
@@ -84,7 +84,7 @@ export default function Home() {
               YouTube Transcript Generator
             </h1>
           </div>
-          <div className="flex justify-center lg:justify-end">
+          <div className="w-full lg:w-auto lg:flex lg:justify-end">
             <SearchField searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
           </div>
         </div>
